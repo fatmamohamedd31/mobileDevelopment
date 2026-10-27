@@ -1,102 +1,80 @@
 
-import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { SafeAreaView, StatusBar } from 'react-native';
 
-export default function HomeScreen() {
-  const router = useRouter();
+import { BottomNav, styles } from '../components/ui';
+import type { Screen } from '../components/ui';
+
+import BranchDetailsScreen from "../components/screens/fatma'sScreens/BranchDetailsScreen";
+import HomeScreen from "../components/screens/fatma'sScreens/HomeScreen";
+import SearchScreen from "../components/screens/fatma'sScreens/searchScreen";
+
+import BranchComparisonScreen from "../components/screens/hana'sScreens/BranchComparisonScreen";
+import LiveQueueStatusScreen from "../components/screens/hana'sScreens/LiveQueueStatusScreen";
+import QueueTrendsScreen from "../components/screens/hana'sScreens/QueueTrendsScreen";
+
+export default function Index() {
+  const [screen, setScreen] = useState<Screen>('home');
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('All');
+
+  const openBranch = () => setScreen('branch');
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.logo}>QueueLess</Text>
-      <Text style={styles.subtitle}>
-        Know when to go.
-      </Text>
+    <SafeAreaView style={styles.safe}>
+      <StatusBar
+        barStyle="dark-content"
+      />
 
-      <View style={styles.card}>
-        <Text style={styles.heading}>Welcome to QueueLess!</Text>
-        <Text style={styles.description}>
-          Spend less time waiting and more time doing what matters.
-        </Text>
-      </View>
+      {screen === 'home' && (
+        <HomeScreen
+          setScreen={setScreen}
+          setCategory={setCategory}
+          openBranch={openBranch}
+          query={query}
+          setQuery={setQuery}
+        />
+      )}
 
-      <Text style={styles.sectionTitle}>What would you like to do?</Text>
+      {screen === 'search' && (
+        <SearchScreen
+          query={query}
+          setQuery={setQuery}
+          category={category}
+          setCategory={setCategory}
+          openBranch={openBranch}
+        />
+      )}
 
-      <Pressable style={styles.card} onPress={() => router.push('/explore')}>
-        <Text style={styles.cardTitle}>Find a Branch</Text>
-        <Text style={styles.description}>
-          Explore service locations and compare waiting times.
-        </Text>
-        <Text style={styles.link}>Explore branches →</Text>
-      </Pressable>
+      {screen === 'branch' && (
+        <BranchDetailsScreen
+          goBack={() => setScreen('search')}
+        />
+      )}
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Live Queue</Text>
-        <Text style={styles.description}>
-          Check queue information and estimated waiting times.
-        </Text>
-      </View>
+      {screen === 'queue' && (
+        <LiveQueueStatusScreen
+          goBack={() => setScreen('home')}
+        />
+      )}
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Best Time to Visit</Text>
-        <Text style={styles.description}>
-          Plan your visit around quieter periods.
-        </Text>
-      </View>
-    </ScrollView>
+      {screen === 'compare' && (
+        <BranchComparisonScreen
+          goBack={() => setScreen('home')}
+          openQueue={() => setScreen('queue')}
+        />
+      )}
+
+      {screen === 'trends' && (
+        <QueueTrendsScreen
+          goBack={() => setScreen('queue')}
+        />
+      )}
+
+      <BottomNav
+        active={screen}
+        onSelect={setScreen}
+      />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 24,
-    backgroundColor: '#FFF5F8',
-  },
-  logo: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: '#D63384',
-    marginTop: 24,
-  },
-  subtitle: {
-    fontSize: 17,
-    color: '#777',
-    marginBottom: 24,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#F3D3E0',
-  },
-  heading: {
-    fontSize: 21,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333',
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 16,
-    color: '#333',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#D63384',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 21,
-  },
-  link: {
-    color: '#D63384',
-    fontWeight: 'bold',
-    marginTop: 12,
-  },
-});
