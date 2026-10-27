@@ -13,6 +13,10 @@ import BranchComparisonScreen from "../components/screens/hana'sScreens/BranchCo
 import LiveQueueStatusScreen from "../components/screens/hana'sScreens/LiveQueueStatusScreen";
 import QueueTrendsScreen from "../components/screens/hana'sScreens/QueueTrendsScreen";
 
+import BestTimeScreen from "../components/screens/laila'sScreens/BestTimeScreen";
+import VisitPlannerScreen from "../components/screens/laila'sScreens/PlannerScreen";
+import NotificationsScreen from "../components/screens/laila'sScreens/AlertsScreen";
+
 export default function Index() {
   const [screen, setScreen] = useState<Screen>('home');
   const [query, setQuery] = useState('');
@@ -22,9 +26,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar
-        barStyle="dark-content"
-      />
+      <StatusBar barStyle="dark-content" />
 
       {screen === 'home' && (
         <HomeScreen
@@ -68,6 +70,25 @@ export default function Index() {
       {screen === 'trends' && (
         <QueueTrendsScreen
           goBack={() => setScreen('queue')}
+        />
+      )}
+
+      {(screen as string) === 'bestTime' && (
+        <BestTimeScreen
+          goBack={() => setScreen('home')}
+          onPlanVisit={() => setScreen('planner' as Screen)}
+        />
+      )}
+
+      {(screen as string) === 'planner' && (
+        <VisitPlannerScreen
+          goBack={() => setScreen('bestTime' as Screen)}
+        />
+      )}
+
+      {(screen as string) === 'notifications' && (
+        <NotificationsScreen
+          goBack={() => setScreen('home')}
         />
       )}
 
